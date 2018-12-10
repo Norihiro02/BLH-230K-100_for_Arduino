@@ -16,7 +16,7 @@ void Input_clock(void) {
     g_count--;
   }
 }
-
+//パルスカウントから角度(度)に変換
 int Deg(long count) {
   //1周30パルス、ギヤ比1:100
   return (360 * count) / (30 * 100);
@@ -24,47 +24,51 @@ int Deg(long count) {
 int Count(int deg) {
   return 30 * 100 * deg / 360;
 }
-void controlPin(int pin, bool mode)
+
+//ピンの状態を変化させる時に10ms待てと指示があったので余裕をもって11ms待ってから他のピンを操作
+void Motor_ControlPin(int pin, bool mode)
 {
-  //ピンの状態を変化させる時に10ms待てと指示があったので余裕をもって11ms待ってから他のピンを操作
   digitalWrite(pin, mode);
   delay(11);
 }
+//モータの初期化
 void Motor_init()
 {
   pinMode(START_STOP_PIN, OUTPUT);
-  controlPin(START_STOP_PIN, LOW);
+  Motor_ControlPin(START_STOP_PIN, LOW);
   pinMode(RUN_BRAKE_PIN, OUTPUT);
-  controlPin(RUN_BRAKE_PIN, LOW);
+  Motor_ControlPin(RUN_BRAKE_PIN, LOW);
   pinMode(CW_CCW_PIN, OUTPUT);
-  controlPin(CW_CCW_PIN, LOW);
+  Motor_ControlPin(CW_CCW_PIN, LOW);
   pinMode(INTVR_EXT, OUTPUT);
-  controlPin(INTVR_EXT, LOW);
+  Motor_ControlPin(INTVR_EXT, LOW);
   pinMode(ALARM_RESET, OUTPUT);
   attachInterrupt(1, Input_clock, RISING);
 
 }
-
+//モータ回転
+// spd:正の整数　cw,不の整数　ccw
 void Motor_Rote(int spd)
 {
-  
   //回転方向を決定
   if (spd < 0)
   {
     g_is_cw=false;
-    controlPin(CW_CCW_PIN, HIGH);
+    Motor_ControlPin(CW_CCW_PIN, HIGH);
   }
   else
   {
     g_is_cw=true;
-    controlPin(CW_CCW_PIN, LOW);
+    Motor_ControlPin(CW_CCW_PIN, LOW);
   }
-  controlPin(START_STOP_PIN, LOW);
+  Motor_ControlPin(START_STOP_PIN, LOW);
 }
+//回転終了
 void Motor_Stop()
 {
-  controlPin(START_STOP_PIN, HIGH);
+  Motor_ControlPin(START_STOP_PIN, HIGH);
 }
+//指定角度に回す(絶対値)
 int Motor_SetPose(int targetDeg) {
   int d_deg;
   int d_count;
@@ -80,8 +84,8 @@ int Motor_SetPose(int targetDeg) {
     while (targetDeg < Deg(g_count));
   } else //左周り
   {
-    //
     Motor_Rote(1);
     while (targetDeg > Deg(g_count));
   }
+  Motor_Stop();
 }
