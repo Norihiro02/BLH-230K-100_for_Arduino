@@ -77,16 +77,22 @@ int SetPose(int targetDeg) {
   if (0 > d_deg)//右回り
   {
     Rote(-1);
-    while (targetDeg < Deg(g_count));
+    while (targetDeg < Deg(g_count)){
+      Serial.println(Deg(g_count));
+      }
   } else //左周り
   {
     //
     Rote(1);
-    while (targetDeg > Deg(g_count));
+    while (targetDeg > Deg(g_count)){
+      Serial.println(Deg(g_count));
+      }
   }
+  Stop()
 }
 
 void setup() {
+  Serial.begin(9600);
   Motor_init();
   // put your setup code here, to run once:
 
@@ -98,7 +104,6 @@ void loop() {
   
   SetPose(0);
   delay(2000);
-  
   SetPose(180);
   delay(2000);
   
