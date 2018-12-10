@@ -24,7 +24,12 @@ int Deg(long count) {
 int Count(int deg) {
   return 30 * 100 * deg / 360;
 }
-
+void controlPin(int pin, bool mode)
+{
+  //ピンの状態を変化させる時に10ms待てと指示があったので余裕をもって11ms待ってから他のピンを操作
+  digitalWrite(pin, mode);
+  delay(11);
+}
 void Motor_init()
 {
   pinMode(START_STOP_PIN, OUTPUT);
@@ -39,13 +44,8 @@ void Motor_init()
   attachInterrupt(1, Input_clock, RISING);
 
 }
-void controlPin(int pin, bool mode)
-{
-  //ピンの状態を変化させる時に10ms待てと指示があったので余裕をもって11ms待ってから他のピンを操作
-  digitalWrite(pin, mode);
-  delay(11);
-}
-void Rote(int spd)
+
+void Motor_Rote(int spd)
 {
   
   //回転方向を決定
@@ -61,11 +61,11 @@ void Rote(int spd)
   }
   controlPin(START_STOP_PIN, LOW);
 }
-void Stop()
+void Motor_Stop()
 {
   controlPin(START_STOP_PIN, HIGH);
 }
-int SetPose(int targetDeg) {
+int Motor_SetPose(int targetDeg) {
   int d_deg;
   int d_count;
   int targetCount;
@@ -76,30 +76,12 @@ int SetPose(int targetDeg) {
 
   if (0 > d_deg)//右回り
   {
-    Rote(-1);
+    Motor_Rote(-1);
     while (targetDeg < Deg(g_count));
   } else //左周り
   {
     //
-    Rote(1);
+    Motor_Rote(1);
     while (targetDeg > Deg(g_count));
   }
-}
-
-void setup() {
-  Motor_init();
-  // put your setup code here, to run once:
-
-}
-
-void loop() {
-  // put your main code here, to run repeatedly:
-  //↓動作確認用プログラム(コメントアウト中)
-  
-  SetPose(0);
-  delay(2000);
-  
-  SetPose(180);
-  delay(2000);
-  
 }
