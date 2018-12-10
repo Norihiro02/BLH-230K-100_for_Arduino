@@ -80,17 +80,17 @@ int Motor_SetPose(int targetDeg) {
 
   if (0 > d_deg)//右回り
   {
-    Rote(-1);
+    Motor_Rote(-1);
     while (targetDeg < Deg(g_count)){
       Serial.println(Deg(g_count));
       }
   } else //左周り
   {
     //
-    Rote(1);
+    Motor_Rote(1);
     while (targetDeg > Deg(g_count)){
       Serial.println(Deg(g_count));
       }
   }
-  Stop();
-
+  Motor_Stop();
+}
