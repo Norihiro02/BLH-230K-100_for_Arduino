@@ -16,7 +16,7 @@ void Input_clock(void) {
     g_count--;
   }
 }
-
+//パルスカウントから角度(度)に変換
 int Deg(long count) {
   //1周30パルス、ギヤ比1:100
   return (360 * count) / (30 * 100);
@@ -25,47 +25,51 @@ int Count(int deg) {
   return 30 * 100 * deg / 360;
 }
 
+//ピンの状態を変化させる時に10ms待てと指示があったので余裕をもって11ms待ってから他のピンを操作
+void Motor_ControlPin(int pin, bool mode)
+{
+  digitalWrite(pin, mode);
+  delay(11);
+}
+//モータの初期化
 void Motor_init()
 {
   pinMode(START_STOP_PIN, OUTPUT);
-  controlPin(START_STOP_PIN, LOW);
+  Motor_ControlPin(START_STOP_PIN, LOW);
   pinMode(RUN_BRAKE_PIN, OUTPUT);
-  controlPin(RUN_BRAKE_PIN, LOW);
+  Motor_ControlPin(RUN_BRAKE_PIN, LOW);
   pinMode(CW_CCW_PIN, OUTPUT);
-  controlPin(CW_CCW_PIN, LOW);
+  Motor_ControlPin(CW_CCW_PIN, LOW);
   pinMode(INTVR_EXT, OUTPUT);
-  controlPin(INTVR_EXT, LOW);
+  Motor_ControlPin(INTVR_EXT, LOW);
   pinMode(ALARM_RESET, OUTPUT);
   attachInterrupt(1, Input_clock, RISING);
 
 }
-void controlPin(int pin, bool mode)
+//モータ回転
+// spd:正の整数　cw,不の整数　ccw
+void Motor_Rote(int spd)
 {
-  //ピンの状態を変化させる時に10ms待てと指示があったので余裕をもって11ms待ってから他のピンを操作
-  digitalWrite(pin, mode);
-  delay(11);
-}
-void Rote(int spd)
-{
-  
   //回転方向を決定
   if (spd < 0)
   {
     g_is_cw=false;
-    controlPin(CW_CCW_PIN, HIGH);
+    Motor_ControlPin(CW_CCW_PIN, HIGH);
   }
   else
   {
     g_is_cw=true;
-    controlPin(CW_CCW_PIN, LOW);
+    Motor_ControlPin(CW_CCW_PIN, LOW);
   }
-  controlPin(START_STOP_PIN, LOW);
+  Motor_ControlPin(START_STOP_PIN, LOW);
 }
-void Stop()
+//回転終了
+void Motor_Stop()
 {
-  controlPin(START_STOP_PIN, HIGH);
+  Motor_ControlPin(START_STOP_PIN, HIGH);
 }
-int SetPose(int targetDeg) {
+//指定角度に回す(絶対値)
+int Motor_SetPose(int targetDeg) {
   int d_deg;
   int d_count;
   int targetCount;
@@ -88,23 +92,5 @@ int SetPose(int targetDeg) {
       Serial.println(Deg(g_count));
       }
   }
-  Stop()
-}
+  Stop();
 
-void setup() {
-  Serial.begin(9600);
-  Motor_init();
-  // put your setup code here, to run once:
-
-}
-
-void loop() {
-  // put your main code here, to run repeatedly:
-  //↓動作確認用プログラム(コメントアウト中)
-  
-  SetPose(0);
-  delay(2000);
-  SetPose(180);
-  delay(2000);
-  
-}
