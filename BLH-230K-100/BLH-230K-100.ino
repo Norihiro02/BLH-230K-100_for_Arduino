@@ -1,8 +1,8 @@
-#define START_STOP_PIN 8
-#define RUN_BRAKE_PIN 4
-#define CW_CCW_PIN 5
-#define INTVR_EXT 6
-#define ALARM_RESET 7
+#define START_STOP_PIN 4
+#define RUN_BRAKE_PIN 5
+#define CW_CCW_PIN 6
+#define INTVR_EXT 7
+#define ALARM_RESET 8
 
 #define SPEED
 #define ALARM
