@@ -69,6 +69,9 @@ void Motor_Stop()
 {
   Motor_ControlPin(START_STOP_PIN, HIGH);
 }
+int Motor_CurrentPose(){
+  return Deg(g_count);
+  }
 void Motor_Start()
 {
   Motor_ControlPin(START_STOP_PIN, LOW);
