@@ -35,9 +35,9 @@ void Motor_ControlPin(int pin, bool mode)
 void Motor_init()
 {
   pinMode(START_STOP_PIN, OUTPUT);
-  Motor_ControlPin(START_STOP_PIN, LOW);
+  Motor_ControlPin(START_STOP_PIN, HIGH);
   pinMode(RUN_BRAKE_PIN, OUTPUT);
-  Motor_ControlPin(RUN_BRAKE_PIN, LOW);
+  Motor_ControlPin(RUN_BRAKE_PIN, HIGH);
   pinMode(CW_CCW_PIN, OUTPUT);
   Motor_ControlPin(CW_CCW_PIN, LOW);
   pinMode(INTVR_EXT, OUTPUT);
@@ -53,21 +53,30 @@ void Motor_Rote(int spd)
   //回転方向を決定
   if (spd < 0)
   {
-    g_is_cw=false;
+    g_is_cw = false;
     Motor_ControlPin(CW_CCW_PIN, HIGH);
   }
   else
   {
-    g_is_cw=true;
+    g_is_cw = true;
     Motor_ControlPin(CW_CCW_PIN, LOW);
   }
-  Motor_ControlPin(START_STOP_PIN, LOW);
+  //Motor_ControlPin(START_STOP_PIN, LOW);
+  Motor_Start();
 }
 //回転終了
 void Motor_Stop()
 {
   Motor_ControlPin(START_STOP_PIN, HIGH);
 }
+int Motor_CurrentPose(){
+  return Deg(g_count);
+  }
+void Motor_Start()
+{
+  Motor_ControlPin(START_STOP_PIN, LOW);
+  Motor_ControlPin(RUN_BRAKE_PIN,LOW);
+  }
 //指定角度に回す(絶対値)
 int Motor_SetPose(int targetDeg) {
   int d_deg;
@@ -81,16 +90,16 @@ int Motor_SetPose(int targetDeg) {
   if (0 > d_deg)//右回り
   {
     Motor_Rote(-1);
-    while (targetDeg < Deg(g_count)){
-      Serial.println(Deg(g_count));
-      }
+    while (targetDeg < Deg(g_count)) {
+      //Serial.println(Deg(g_count));
+    }
   } else //左周り
   {
     //
     Motor_Rote(1);
-    while (targetDeg > Deg(g_count)){
-      Serial.println(Deg(g_count));
-      }
+    while (targetDeg > Deg(g_count)) {
+      //Serial.println(Deg(g_count));
+    }
   }
   Motor_Stop();
 }
