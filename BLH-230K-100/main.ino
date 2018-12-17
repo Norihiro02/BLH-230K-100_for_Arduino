@@ -13,9 +13,11 @@ void loop() {
     Motor_SetPose(0);
     delay(3000);
   }*/
-  
+  Motor_Rote(1);
+  /*
   Motor_SetPose(wait_for_data());
   Motor_Stop();
-  Serial.println(Motor_CurrentPose());
-
+  Serial.print(Motor_CurrentPose());
+  Serial.print('\n');
+*/
 }

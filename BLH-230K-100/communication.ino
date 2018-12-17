@@ -5,10 +5,6 @@ int encode(byte data[])
   int output = 0;
 
   for (int i = 1; i <  RX_DATA_SIZE; i++) {
-    /*
-      output = output << 8;
-      output += data[i];
-    */
     output *= 10;
     output += data[i] - '0';
   }
@@ -24,7 +20,7 @@ int wait_for_data()
 {
   byte rxData[RX_DATA_SIZE];
   int output = 0;
-  while (RX_DATA_SIZE > Serial.available()); //2バイト受信するまで待機
+  while (RX_DATA_SIZE > Serial.available()); //4バイト受信するまで待機
   for (int i = 0; i < RX_DATA_SIZE; i++)
   {
     rxData[i] = Serial.read();
