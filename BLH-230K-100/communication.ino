@@ -1,4 +1,4 @@
-#define RX_DATA_SIZE 4
+ #define RX_DATA_SIZE 4
 
 int encode(byte data[])
 {
@@ -25,6 +25,9 @@ int wait_for_data()
   {
     rxData[i] = Serial.read();
   }
-
-  return encode(rxData);
+  while(Serial.available()){
+    Serial.read();
+    }
+  
+ return encode(rxData);
 }
